@@ -5,8 +5,6 @@
 RTC_DS1307 RTC;
 
 int sensortmp=A0,sensorluz=A1,ace=A2;
-byte direccionmemoria=B0101000;
-byte direccionlsb=0,direccionmsb=0;
 int ldr=0,ejez=0,grad,angulo,toma=0;
 float tmp,grado;
 boolean estadoboton=false;
@@ -21,7 +19,6 @@ byte rdata;
 int time0,time1;
 
 
-
   void i2c_eeprom_write_byte( int deviceaddress, unsigned int eeaddress, byte data ) 
   {
      int rdata = data;
@@ -34,7 +31,6 @@ int time0,time1;
   
   byte i2c_eeprom_read_byte( int deviceaddress, unsigned int eeaddress ) 
   {
-    
     Wire.beginTransmission(deviceaddress);
     Wire.write((int)(eeaddress >> 8)); // MSB
     Wire.write((int)(eeaddress & 0xFF)); // LSB
@@ -43,7 +39,6 @@ int time0,time1;
     if (Wire.available()) rdata = Wire.read();
     return rdata;
   }
-
 
 
 void setup() 
@@ -56,17 +51,10 @@ void setup()
       attachInterrupt(0,bto,FALLING);
       pinMode(led,OUTPUT);
       lcd.begin(16,2);
-
-      
-      
-  
-
-   
 }
 
 void loop() 
 {
-  
   tmp=analogRead(sensortmp);
   grado=(((tmp*5)/1024)-0.5)*100;
   grad=int(grado);
@@ -77,10 +65,11 @@ void loop()
   
   ejez=analogRead(ace);
   time0 = 0;
-            time1 = millis();
-            while(time0 < 150){
-                time0 = millis()-time1;
-            }
+  time1 = millis();
+  while(time0 < 150){
+    time0 = millis()-time1;
+  }
+  
   angulo = ((413-ejez)*9)/7;
   byteejez=byte(angulo);
   
@@ -88,19 +77,16 @@ void loop()
   {
     if (stringComplete) 
     {
-
      char sFecha[50],sHora[50];
      inputString.substring(0, inputString.indexOf(',')).toCharArray(sFecha, 50) ;
      inputString.substring(inputString.indexOf(',') + 2).toCharArray(sHora, 50);
      
-
-      RTC.adjust(DateTime(sFecha, sHora));
+     RTC.adjust(DateTime(sFecha, sHora));
  
     // borra el string y la bandera
      inputString = "";
      stringComplete = false;
      }
-  
   }
        
   if(estadoboton==true)
@@ -118,8 +104,7 @@ void loop()
          byte a =i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(a,DEC);
          Serial.print(",");
-         //rdata=serialldr;
-          ++addr;
+         ++addr;
  /*....................ldr..............................*/
          i2c_eeprom_write_byte(0b1010000,addr,byteldr);
          delay(10);
@@ -127,27 +112,21 @@ void loop()
          Serial.print(b,DEC);
          Serial.print(",");
           ++addr;
-         //rdata=serialgrado;
   /*..................angulo..............................*/
          i2c_eeprom_write_byte(0b1010000,addr,byteejez);
          delay(10);
          byte c=i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(c,DEC);
          Serial.print(",");
-         //rdata=serialangulo;
          addr++;
- /*..................mes............,,,,,,,,,,,,,,,,,,,,,,,*/
-         
+ /*..................mes............,,,,,,,,,,,,,,,,,,,,,,,*/ 
          i2c_eeprom_write_byte(0b1010000,addr,now.month());
          delay(10);
          byte d=i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(d,DEC);
          Serial.print(",");
-         //rdata=serialangulo;
          addr++;
-         
-/*...................dia.................................*/    
-        
+/*...................dia.................................*/   
          i2c_eeprom_write_byte(0b1010000,addr,now.day());
          delay(10);
          byte e=i2c_eeprom_read_byte(0b1010000,addr);
@@ -157,25 +136,19 @@ void loop()
          addr++;
 /*........................año..............................*/        
          int intyear=now.year()-2000;
-        
          i2c_eeprom_write_byte(0b1010000,addr,intyear);
          delay(10);
          byte f=i2c_eeprom_read_byte(0b1010000,addr);
          addr++;
          Serial.print(f,DEC);
          Serial.print(",");
-
-         
-         //rdata=serialangulo;
          addr++;
-  
 /*.......................hora...................*/        
          i2c_eeprom_write_byte(0b1010000,addr,now.hour());
          delay(10);
          byte h=i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(h,DEC);
          Serial.print(",");
-         //rdata=serialangulo;
          addr++;
 /*.................minutos.........................*/         
          i2c_eeprom_write_byte(0b1010000,addr,now.minute());
@@ -183,7 +156,6 @@ void loop()
          byte i=i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(i,DEC);
          Serial.print(",");
-         //rdata=serialangulo;
          addr++;
 /*....................segundos......................*/
          i2c_eeprom_write_byte(0b1010000,addr,now.second());
@@ -191,69 +163,51 @@ void loop()
          byte j=i2c_eeprom_read_byte(0b1010000,addr);
          Serial.print(j,DEC);
          Serial.print(",");
-         //rdata=serialangulo;
          addr++;
 /*.................................*/         
        Serial.println();
       }
-      
-    
-    
-     
-     
-         
-    
-     
-        
-    
+   }
+}
+
+  void imprimir()
+  {
+    digitalWrite(led,LOW);
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("T:");
+    lcd.setCursor(2,1);
+    lcd.print(grado);
+    lcd.setCursor(10,1);
+    lcd.print("A:");
+    lcd.setCursor(12,1);
+    lcd.print(angulo);
   }
-}
 
 
-
-void imprimir()
-{
-  
-  digitalWrite(led,LOW);
-   lcd.clear();
-   lcd.setCursor(0,1);
-   lcd.print("T:");
-   lcd.setCursor(2,1);
-   lcd.print(grado);
-   lcd.setCursor(10,1);
-   lcd.print("A:");
-   lcd.setCursor(12,1);
-   lcd.print(angulo);
-  
-}
-
-
-void bto()
-{
+  void bto()
+  {
     intervalo=millis();
     
     if((millis()-aaa)>200)
-    { 
-      
+    {
       estadoboton=true;
-      aaa=millis();
-    
-      
+      aaa=millis();      
     }
-}
+  }
 
-void serialEvent() 
-{
-  while (Serial.available()) {
+  void serialEvent() 
+  {
+    while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read(); 
     // add it to the inputString:
     inputString += inChar;
     // if the incoming character is a newline, set a flag
     // so the main loop can do something about it:
-    if (inChar == '\n') {
+    if (inChar == '\n')
+    {
       stringComplete = true;
     }
-    
+    }
   }
-}

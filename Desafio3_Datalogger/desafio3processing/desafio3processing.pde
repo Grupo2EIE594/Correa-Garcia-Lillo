@@ -29,24 +29,13 @@ void setup()
     fichero=createWriter("valores.txt");
     cp5 = new ControlP5(this);
     PFont font = createFont("arial",20);
-    
-    /*cp5.addButton("enviar")
-   .setPosition(45,100)
-   .setSize(100,40)
-   .setValue(0)
-   ;*/
-   
-  /*  cp5.addButton("SYN")
-   .setValue(0)
-   .setPosition(300,100)
-   .setSize(100,40)
-   ;*/
-   
-   cp5.addButton("SET")
-   .setValue(0)
-   .setPosition(520,300)
-   .setSize(100,40)
-   ;
+
+
+     cp5.addButton("SET")
+     .setValue(0)
+     .setPosition(520,300)
+     .setSize(100,40)
+     ;
    
      cp5.addTextfield("hora")
      .setPosition(500,180)
@@ -65,25 +54,14 @@ void setup()
      .setFocus(true)
      .setColor(color(255,0,0))
      ;
-
 }
 
 void draw()
 {
-  
     interfaz();
     
     if(stringComplete==true)
     {
-      
-    /*datos[i]=inputString;
-      i++;
-      if(i==10)
-        {
-          i=0;
-        }*/
-      
-      
        String myString=inputString;// tomamos los datos del serila como un string.
        if(myString!=null)// null si es que no hay nada lo negamos para q sea disntinto anda ya q recibiremos los valores.
        {
@@ -107,7 +85,6 @@ void draw()
         hora=int(hor);
         min=int(mi);
         seg=int(se);
-        
       }
       
    if(estadoguardar==true) 
@@ -130,17 +107,11 @@ void draw()
  
 
 
-
-
-
-
-
 void interfaz()
 {
  background(255);
  stroke(0);
-
-
+ 
  fill(0,208,242); 
  rect(0,0,700,80);
  fill(0);
@@ -195,8 +166,7 @@ void interfaz()
  fill(0);
  text("T°-ldr-angulo-mes/dia/año-hora:min:seg",250,160);
  if(estadoSYN==true)
- {
-   
+ {  
    for(int j=0;j<10;j++)
           {
             if(j==0)
@@ -207,14 +177,9 @@ void interfaz()
             text(m,255,180+k);
             k=k+20;
           }
-         
-          
  }
 
 
-        
- 
- 
  //3 pestaña
  fill(191,248,255); 
  rect(466,80,233,319);
@@ -224,40 +189,24 @@ void interfaz()
  textSize(8);
  text("Mmm: Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec", 475,120);
  textSize(10);
- text("Formato hora:  HH:MM:SS", 510,145);   
- 
+ text("Formato hora:  HH:MM:SS", 510,145);    
 }
 
-/*public void enviar(int theValue)
-{
-    estadoguardar=true;    
-
-}
-
-public void SYN(int theValue)
-{
-   
- 
-}*/
 
 public void hora(String theText)
 {
   shora=theText;
-
 }
 public void fecha(String theText)
 {
-
-sfecha=theText;
+  sfecha=theText;
 }
-
-public void SET(int theValue) {
-
+public void SET(int theValue) 
+{
   myPort.write(cp5.get(Textfield.class,"fecha").getText()+ ", " + cp5.get(Textfield.class,"hora").getText() + "\n");
   
   println("Hora enviada a Arduino: " + cp5.get(Textfield.class,"fecha").getText() + ", " + cp5.get(Textfield.class,"hora").getText());
 }
-
 
 void controlEvent(ControlEvent theEvent) {
   if(theEvent.isAssignableFrom(Textfield.class)) {
@@ -297,7 +246,6 @@ void guardar()
     fichero.flush();
 }
 
-
 void serialEvent(Serial p) 
 { 
   while (p.available()>0 ) {
@@ -309,8 +257,6 @@ void serialEvent(Serial p)
     // so the main loop can do something about it:
     if (inChar == '\n') {
       stringComplete = true;
-     
-      
     }
   }
 } 
@@ -318,8 +264,6 @@ void serialEvent(Serial p)
 
 void mousePressed()
 {
-  
-  
   if(mouseY>=100 && mouseY<=140)
   {
     if(mouseX>=65 && mouseX<=165)
@@ -337,23 +281,16 @@ void mousePressed()
           { 
             if(aux==0)
             {
-                estadoSYN=true;
-                aux++;
+              estadoSYN=true;
+              aux++;
             }
             else if(aux==1) 
             {
-             estadoSYN=false;
-             aux=0;
+              estadoSYN=false;
+              aux=0;
             }
-           
-          
            }
   }
-
-    
-   
- 
-   
 }
 
 void armar()
@@ -373,7 +310,6 @@ void armar()
   {
    datos[i]=data;
    i++;
-   
   }
   else
  {
@@ -381,13 +317,4 @@ void armar()
    datos[i]=data;
    i++;
  }
-  
-   
-
-      
-       
-
 }
-
-
- 
